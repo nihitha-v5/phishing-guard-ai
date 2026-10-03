@@ -1,5 +1,5 @@
 import express from 'express';
-import { getTelemetry, updateEventAction } from '../store/telemetryStore.js';
+import { getTelemetry, updateEventAction, resetTelemetryToBaseline } from '../store/telemetryStore.js';
 
 const router = express.Router();
 
@@ -48,6 +48,25 @@ router.post('/action', (req, res) => {
     res.status(500).json({
       status: 'error',
       message: 'Failed to update telemetry action.'
+    });
+  }
+});
+
+// POST /api/telemetry/reset - Reset telemetry to standard baseline
+router.post('/reset', (req, res) => {
+  try {
+    resetTelemetryToBaseline();
+    const fresh = getTelemetry();
+    res.json({
+      status: 'success',
+      message: 'Telemetry database reset to initial baseline.',
+      data: fresh
+    });
+  } catch (err) {
+    console.error('Error resetting telemetry:', err);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to reset telemetry.'
     });
   }
 });

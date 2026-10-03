@@ -1,15 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
+import RiskGauge from './RiskGauge';
 import { 
+  Search, 
   Send, 
-  Sparkles, 
   RefreshCw, 
   FileText, 
+  Link2, 
+  Mail, 
+  Sparkles, 
   AlertCircle, 
-  Sliders, 
+  CheckCircle2, 
+  ShieldAlert, 
+  ShieldCheck, 
+  ArrowRight, 
+  BookOpen, 
+  Lock, 
   Layers,
-  ChevronRight,
-  ShieldCheck,
-  CheckCircle2
+  Info,
+  ChevronDown
 } from 'lucide-react';
 
 export default function AnalyzerView({ 
@@ -17,29 +25,31 @@ export default function AnalyzerView({
   setFormData, 
   onAnalyze, 
   loading, 
-  sampleScenarios, 
+  report, 
+  sampleScenarios = [], 
   onSelectScenario,
-  selectedScenarioId
+  selectedScenarioId,
+  onNavigateToIntel,
+  onNavigateToCoaching,
+  onNavigateToProtection,
+  onResetAnalysis
 }) {
-  const [rawPasteMode, setRawPasteMode] = useState(false);
-  const [rawText, setRawText] = useState('');
+  const [inputTab, setInputTab] = useState('message'); // 'message' | 'url' | 'headers'
+  const [rawHeaders, setRawHeaders] = useState('');
 
-  const handleRawParse = () => {
-    if (!rawText.trim()) return;
-    
-    // Simple header extraction
+  const handleParseHeaders = () => {
+    if (!rawHeaders.trim()) return;
     let sender = '';
     let subject = '';
-    let body = rawText;
+    let body = rawHeaders;
 
-    const fromMatch = rawText.match(/^From:\s*(.*)$/im);
+    const fromMatch = rawHeaders.match(/^From:\s*(.*)$/im);
     if (fromMatch) sender = fromMatch[1].trim();
 
-    const subjMatch = rawText.match(/^Subject:\s*(.*)$/im);
+    const subjMatch = rawHeaders.match(/^Subject:\s*(.*)$/im);
     if (subjMatch) subject = subjMatch[1].trim();
 
-    // Remove headers if present to get clean body
-    body = rawText
+    body = rawHeaders
       .replace(/^From:.*$/im, '')
       .replace(/^To:.*$/im, '')
       .replace(/^Subject:.*$/im, '')
@@ -50,267 +60,418 @@ export default function AnalyzerView({
       ...prev,
       sender: sender || prev.sender,
       subject: subject || prev.subject,
-      body: body || rawText
+      body: body || prev.body
     }));
-
-    setRawPasteMode(false);
+    setInputTab('message');
   };
 
-  const handleAddUrl = () => {
-    setFormData(prev => ({
-      ...prev,
-      urls: [...prev.urls, '']
-    }));
-  };
-
-  const handleUrlChange = (index, value) => {
-    const updated = [...formData.urls];
-    updated[index] = value;
-    setFormData(prev => ({ ...prev, urls: updated }));
-  };
-
-  const handleRemoveUrl = (index) => {
-    const updated = formData.urls.filter((_, i) => i !== index);
-    setFormData(prev => ({ ...prev, urls: updated }));
+  const handleClear = () => {
+    setFormData({
+      sender: '',
+      subject: '',
+      body: '',
+      urls: [''],
+      department: 'Finance',
+      organizationDomain: 'acme-corp.com'
+    });
+    setRawHeaders('');
+    if (onResetAnalysis) onResetAnalysis();
   };
 
   return (
     <div className="space-y-8 animate-fadeIn">
-      {/* Header Banner */}
+      
+      {/* Top Banner */}
       <div className="glass-panel p-6 sm:p-8 rounded-2xl relative overflow-hidden">
-        <div className="absolute -right-10 -bottom-10 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
         <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 mb-4">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Step 1: Intelligent Threat Detection</span>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 mb-3">
+            <Search className="w-3.5 h-3.5" />
+            <span>Interactive Threat Scanner</span>
           </div>
+
           <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-            Inspect Suspicious Emails & Messages
+            Analyze Threat
           </h1>
           <p className="text-slate-400 mt-2 text-sm sm:text-base leading-relaxed">
-            PhishGuard AI analyzes sender authentication, lookalike typosquatting domains, psychological urgency markers, deceptive URL destinations, and credential harvesting gateways.
+            Submit a suspicious email, message body, or URL for multi-vector threat decomposition, domain authentication checking, and explainable risk evaluation.
           </p>
-        </div>
 
-        {/* Quick Scenario Picker */}
-        <div className="mt-6 pt-6 border-t border-slate-800">
-          <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+          {/* Sample Scenario Picker */}
+          <div className="mt-5 pt-4 border-t border-slate-800">
+            <div className="flex items-center gap-2 mb-2.5">
               <Layers className="w-4 h-4 text-cyan-400" />
-              Load Real-World Scenario:
-            </span>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-            {sampleScenarios.map(sc => {
-              const isSelected = selectedScenarioId === sc.id;
-              return (
-                <button
-                  key={sc.id}
-                  onClick={() => onSelectScenario(sc)}
-                  className={`text-left p-3 rounded-xl border text-xs font-medium transition-all duration-150 flex flex-col justify-between ${
-                    isSelected 
-                      ? 'bg-cyan-950/60 border-cyan-500/60 text-cyan-200 shadow-md shadow-cyan-900/30' 
-                      : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-slate-700 hover:bg-slate-850'
-                  }`}
-                >
-                  <div className="font-semibold text-slate-200 truncate">{sc.title}</div>
-                  <div className="flex items-center justify-between mt-2 pt-1 border-t border-slate-800/60 text-[11px] text-slate-400">
-                    <span>{sc.category}</span>
-                    <span className={`font-semibold ${sc.difficulty.includes('Critical') ? 'text-red-400' : sc.difficulty.includes('High') ? 'text-orange-400' : 'text-emerald-400'}`}>
-                      {sc.difficulty}
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
+              <span className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                Load Sample Scenario:
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+              {sampleScenarios.map(sc => {
+                const isSelected = selectedScenarioId === sc.id;
+                return (
+                  <button
+                    key={sc.id}
+                    type="button"
+                    onClick={() => onSelectScenario(sc)}
+                    className={`text-left p-3 rounded-xl border text-xs font-medium transition-all duration-150 flex flex-col justify-between ${
+                      isSelected 
+                        ? 'bg-cyan-950/70 border-cyan-500/70 text-cyan-200 shadow-md shadow-cyan-950' 
+                        : 'bg-slate-900/60 border-slate-800 text-slate-300 hover:border-slate-700 hover:bg-slate-850'
+                    }`}
+                  >
+                    <div className="font-semibold text-slate-100 truncate">{sc.title}</div>
+                    <div className="flex items-center justify-between mt-2 pt-1 border-t border-slate-800/60 text-[11px] text-slate-400">
+                      <span>{sc.category}</span>
+                      <span className={`font-semibold ${
+                        sc.difficulty.includes('Critical') ? 'text-red-400' :
+                        sc.difficulty.includes('High') ? 'text-orange-400' : 'text-emerald-400'
+                      }`}>
+                        {sc.difficulty}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Main Form Area */}
-      <div className="glass-panel p-6 sm:p-8 rounded-2xl">
-        <div className="flex items-center justify-between mb-6 pb-4 border-b border-slate-800">
-          <h2 className="text-lg font-bold text-slate-100 flex items-center gap-2">
-            <FileText className="w-5 h-5 text-cyan-400" />
-            Message Attributes & Content
-          </h2>
-          <div className="flex items-center gap-2">
+      {/* Main Workspace & Result View */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        {/* Left Column: Input Form (7 Cols on desktop) */}
+        <div className={`glass-panel p-6 rounded-2xl space-y-5 ${report ? 'lg:col-span-7' : 'lg:col-span-12'}`}>
+          
+          {/* Workspace Tabs */}
+          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div className="flex items-center space-x-2">
+              <button
+                type="button"
+                onClick={() => setInputTab('message')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                  inputTab === 'message'
+                    ? 'bg-cyan-600 text-white'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+                }`}
+              >
+                <Mail className="w-3.5 h-3.5" />
+                <span>Message & Body</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setInputTab('url')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                  inputTab === 'url'
+                    ? 'bg-cyan-600 text-white'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+                }`}
+              >
+                <Link2 className="w-3.5 h-3.5" />
+                <span>Direct URL</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setInputTab('headers')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                  inputTab === 'headers'
+                    ? 'bg-cyan-600 text-white'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+                }`}
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span>Email Headers</span>
+              </button>
+            </div>
+
             <button
-              onClick={() => setRawPasteMode(!rawPasteMode)}
-              className="text-xs px-3 py-1.5 rounded-lg border border-slate-700 text-slate-300 hover:bg-slate-800 transition"
-            >
-              {rawPasteMode ? 'Switch to Form Fields' : 'Paste Raw EML / Headers'}
-            </button>
-            <button
-              onClick={() => setFormData({
-                sender: '',
-                subject: '',
-                body: '',
-                urls: [''],
-                department: 'Finance',
-                organizationDomain: 'acme-corp.com'
-              })}
-              className="text-xs px-3 py-1.5 rounded-lg border border-slate-700 text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition flex items-center gap-1"
+              type="button"
+              onClick={handleClear}
+              className="text-xs text-slate-400 hover:text-slate-200 px-2 py-1 rounded hover:bg-slate-900 transition flex items-center gap-1"
             >
               <RefreshCw className="w-3 h-3" />
-              Clear
+              <span>Clear</span>
             </button>
           </div>
-        </div>
 
-        {rawPasteMode ? (
-          <div className="space-y-4">
-            <label className="block text-xs font-semibold text-slate-300">
-              Paste Raw Email Content or RFC Headers:
-            </label>
-            <textarea
-              rows={10}
-              value={rawText}
-              onChange={e => setRawText(e.target.value)}
-              placeholder="From: IT Support <support@micros0ft.com>&#10;Subject: Urgent password notice&#10;&#10;Please verify immediately..."
-              className="w-full bg-slate-900/90 border border-slate-700 rounded-xl p-4 text-xs font-mono text-slate-200 focus:outline-none focus:border-cyan-500"
-            />
-            <button
-              onClick={handleRawParse}
-              className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold rounded-lg transition"
-            >
-              Extract & Apply Fields
-            </button>
-          </div>
-        ) : (
-          <form onSubmit={(e) => { e.preventDefault(); onAnalyze(); }} className="space-y-5">
-            {/* Sender & Department Row */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="md:col-span-2">
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                  Sender (Display Name & Email Address)
+          {/* Form Controls */}
+          {inputTab === 'headers' ? (
+            <div className="space-y-3">
+              <label className="block text-xs font-semibold text-slate-300">
+                Paste RFC 5322 Email Headers & Raw Body:
+              </label>
+              <textarea
+                rows={9}
+                value={rawHeaders}
+                onChange={e => setRawHeaders(e.target.value)}
+                placeholder="From: IT Support <support@micros0ft.com>&#10;Subject: Urgent Password Expiry&#10;&#10;Please verify your account immediately..."
+                className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3.5 text-xs font-mono text-slate-200 focus:outline-none focus:border-cyan-500"
+              />
+              <button
+                type="button"
+                onClick={handleParseHeaders}
+                className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold rounded-lg transition"
+              >
+                Parse & Fill Form
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={(e) => { e.preventDefault(); onAnalyze(); }} className="space-y-4">
+              
+              {/* Sender & Department Row */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="md:col-span-2">
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                    Sender Information (Name & Email)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.sender}
+                    onChange={e => setFormData({ ...formData, sender: e.target.value })}
+                    placeholder='e.g. "IT Helpdesk" <support@micros0ft-security-auth.com>'
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                    Target Department
+                  </label>
+                  <select
+                    value={formData.department}
+                    onChange={e => setFormData({ ...formData, department: e.target.value })}
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 focus:outline-none focus:border-cyan-500"
+                  >
+                    <option value="Finance">Finance</option>
+                    <option value="Human Resources">Human Resources</option>
+                    <option value="Engineering">Engineering</option>
+                    <option value="Operations">Operations</option>
+                    <option value="Executive">Executive</option>
+                    <option value="Legal">Legal</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Subject */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  Subject Line
                 </label>
                 <input
                   type="text"
-                  value={formData.sender}
-                  onChange={e => setFormData({ ...formData, sender: e.target.value })}
-                  placeholder='e.g. "Corporate Payroll" <payroll-department@gmail.com>'
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
+                  value={formData.subject}
+                  onChange={e => setFormData({ ...formData, subject: e.target.value })}
+                  placeholder="e.g. FINAL NOTICE: Your Office 365 Password Expires Today"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
                 />
               </div>
 
+              {/* Body Content */}
+              {inputTab === 'message' && (
+                <div>
+                  <label className="block text-xs font-semibold text-slate-300 mb-1">
+                    Message Body Content
+                  </label>
+                  <textarea
+                    rows={6}
+                    value={formData.body}
+                    onChange={e => setFormData({ ...formData, body: e.target.value })}
+                    placeholder="Paste the message content here..."
+                    className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                  />
+                </div>
+              )}
+
+              {/* URL Field */}
               <div>
-                <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                  Target Department
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  Target Hyperlink / URL Destination
                 </label>
-                <select
-                  value={formData.department}
-                  onChange={e => setFormData({ ...formData, department: e.target.value })}
-                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-cyan-500"
-                >
-                  <option value="Finance">Finance & Accounting</option>
-                  <option value="Human Resources">Human Resources (HR)</option>
-                  <option value="Engineering">Engineering / IT</option>
-                  <option value="Executive">Executive Leadership</option>
-                  <option value="Operations">Operations / Logistics</option>
-                  <option value="Legal">Legal & Compliance</option>
-                  <option value="Marketing">Marketing / Sales</option>
-                </select>
+                <input
+                  type="text"
+                  value={formData.urls[0] || ''}
+                  onChange={e => setFormData({ ...formData, urls: [e.target.value] })}
+                  placeholder="http://workday-portal.auth-verify-session.xyz/login/verify"
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs font-mono text-cyan-300 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                />
               </div>
-            </div>
 
-            {/* Subject */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                Subject Line
-              </label>
-              <input
-                type="text"
-                value={formData.subject}
-                onChange={e => setFormData({ ...formData, subject: e.target.value })}
-                placeholder="e.g. URGENT: Action Required - Account Verification"
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
-              />
-            </div>
+              {/* Submit CTA */}
+              <div className="pt-2 flex items-center justify-between">
+                <span className="text-[11px] text-slate-500 font-mono">
+                  Engine: Explainable Heuristic & Risk Synthesis
+                </span>
 
-            {/* Message Body */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
-                Message Body Content
-              </label>
-              <textarea
-                rows={7}
-                value={formData.body}
-                onChange={e => setFormData({ ...formData, body: e.target.value })}
-                placeholder="Paste the full text of the suspicious email or message..."
-                className="w-full bg-slate-900 border border-slate-700 rounded-xl p-3.5 text-sm text-slate-100 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500"
-              />
-            </div>
-
-            {/* URLs Section */}
-            <div>
-              <div className="flex items-center justify-between mb-1.5">
-                <label className="text-xs font-semibold text-slate-300">
-                  Target URLs / Hyperlinks (Auto-extracted or explicitly specified)
-                </label>
                 <button
-                  type="button"
-                  onClick={handleAddUrl}
-                  className="text-xs text-cyan-400 hover:text-cyan-300 font-semibold"
+                  type="submit"
+                  disabled={loading || (!formData.sender && !formData.subject && !formData.body && !formData.urls[0])}
+                  className={`px-6 py-2.5 rounded-xl font-bold text-xs sm:text-sm text-white shadow-lg flex items-center gap-2 transition-all ${
+                    loading || (!formData.sender && !formData.subject && !formData.body && !formData.urls[0])
+                      ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                      : 'bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 shadow-cyan-500/25 active:scale-95'
+                  }`}
                 >
-                  + Add Another URL
+                  {loading ? (
+                    <>
+                      <RefreshCw className="w-4 h-4 animate-spin" />
+                      <span>Scanning Indicators...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4" />
+                      <span>Analyze Threat</span>
+                    </>
+                  )}
                 </button>
               </div>
-              {formData.urls.map((url, idx) => (
-                <div key={idx} className="flex items-center gap-2 mb-2">
-                  <input
-                    type="text"
-                    value={url}
-                    onChange={e => handleUrlChange(idx, e.target.value)}
-                    placeholder="http://suspicious-login.xyz/auth/verify"
-                    className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-3.5 py-2 text-xs font-mono text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
-                  />
-                  {formData.urls.length > 1 && (
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveUrl(idx)}
-                      className="text-slate-500 hover:text-red-400 text-xs px-2 py-1"
-                    >
-                      Remove
-                    </button>
+
+            </form>
+          )}
+
+        </div>
+
+        {/* Right Column: Professional Result Card (5 Cols on desktop) */}
+        {report && (
+          <div className="lg:col-span-5 glass-panel p-6 rounded-2xl space-y-5 animate-fadeIn border-l-4 border-l-cyan-500 flex flex-col justify-between">
+            
+            <div className="space-y-4">
+              {/* Header Result */}
+              <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">
+                    Security Verdict
+                  </span>
+                  <h3 className="text-base font-bold text-white mt-0.5">
+                    {report.riskLevel === 'CRITICAL' || report.riskLevel === 'HIGH' ? '🚨 Threat Detected' : '✅ Standard Risk Level'}
+                  </h3>
+                </div>
+
+                <span className={`px-2.5 py-1 rounded-md font-mono text-xs font-bold ${
+                  report.riskLevel === 'CRITICAL' ? 'bg-red-500/20 text-red-400 border border-red-500/40 glow-critical' :
+                  report.riskLevel === 'HIGH' ? 'bg-orange-500/20 text-orange-400 border border-orange-500/40 glow-high' :
+                  report.riskLevel === 'MEDIUM' ? 'bg-amber-500/20 text-amber-400 border border-amber-500/40' :
+                  'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
+                }`}>
+                  {report.riskLevel}
+                </span>
+              </div>
+
+              {/* Gauge & Metrics */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-center">
+                  <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Risk Score</span>
+                  <div className="text-2xl font-extrabold font-mono text-white">
+                    <span className={report.score >= 50 ? 'text-red-400' : 'text-emerald-400'}>{report.score}</span>
+                    <span className="text-xs text-slate-500 font-normal"> / 100</span>
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 text-center">
+                  <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1">Confidence</span>
+                  <div className="text-2xl font-extrabold font-mono text-cyan-400">
+                    {report.confidence || 96.4}%
+                  </div>
+                </div>
+              </div>
+
+              {/* Classification */}
+              <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-xs">
+                <span className="text-slate-400 block text-[10px] uppercase font-bold">Attack Classification:</span>
+                <span className="font-bold text-slate-100 font-mono text-xs mt-0.5 block">
+                  {report.classification || 'Social Engineering / Phishing'}
+                </span>
+              </div>
+
+              {/* Detected Indicators List */}
+              <div className="space-y-2">
+                <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">
+                  Detected Indicators ({report.indicators?.length || 0}):
+                </span>
+
+                <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1">
+                  {report.indicators?.length > 0 ? (
+                    report.indicators.map((ind, i) => (
+                      <div key={i} className="p-2 rounded-lg bg-slate-900/80 border border-slate-800 text-xs flex items-center justify-between">
+                        <div className="flex items-center gap-2 truncate">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                          <span className="text-slate-200 truncate">{ind.title}</span>
+                        </div>
+                        <span className={`text-[10px] font-mono font-bold px-1.5 py-0.2 rounded shrink-0 ${
+                          ind.severity === 'CRITICAL' ? 'text-red-400 bg-red-500/10' : 'text-orange-400 bg-orange-500/10'
+                        }`}>
+                          {ind.severity}
+                        </span>
+                      </div>
+                    ))
+                  ) : (
+                    <div className="text-xs text-slate-400 p-2 bg-slate-900/40 rounded-lg">
+                      No malicious indicators detected.
+                    </div>
                   )}
                 </div>
-              ))}
+              </div>
+
+              {/* Plain English Explanation */}
+              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800/80 text-xs space-y-1">
+                <div className="font-semibold text-cyan-300 flex items-center gap-1.5">
+                  <Info className="w-3.5 h-3.5" />
+                  <span>Explainable Threat Summary:</span>
+                </div>
+                <p className="text-slate-300 leading-relaxed text-[11px]">
+                  {report.threatSummary}
+                </p>
+              </div>
+
+              {/* Recommended Action */}
+              <div className="p-3 rounded-xl bg-emerald-950/20 border border-emerald-800/40 text-xs space-y-1">
+                <div className="font-semibold text-emerald-400 flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Recommended Action:</span>
+                </div>
+                <p className="text-emerald-200/90 leading-relaxed text-[11px]">
+                  {report.safeActions && report.safeActions[0]}
+                </p>
+              </div>
             </div>
 
-            {/* Action Bar */}
-            <div className="pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div className="text-xs text-slate-400 flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-cyan-400" />
-                <span>Protected Sandbox Evaluation • Transparent Multi-Vector Heuristics</span>
+            {/* Action CTAs */}
+            <div className="pt-3 border-t border-slate-800 space-y-2">
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={onNavigateToIntel}
+                  className="px-3 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs transition flex items-center justify-center gap-1"
+                >
+                  <span>View Evidence</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+
+                <button
+                  type="button"
+                  onClick={onNavigateToCoaching}
+                  className="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-semibold text-xs border border-slate-700 transition flex items-center justify-center gap-1"
+                >
+                  <BookOpen className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Start Coaching</span>
+                </button>
               </div>
 
               <button
-                type="submit"
-                disabled={loading || (!formData.sender && !formData.subject && !formData.body)}
-                className={`w-full sm:w-auto px-8 py-3 rounded-xl font-bold text-sm text-white shadow-lg flex items-center justify-center gap-2 transition-all duration-200 ${
-                  loading || (!formData.sender && !formData.subject && !formData.body)
-                    ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-cyan-600 via-blue-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 shadow-cyan-500/25 active:scale-95'
-                }`}
+                type="button"
+                onClick={handleClear}
+                className="w-full py-1.5 text-xs text-slate-400 hover:text-slate-200 font-semibold transition text-center"
               >
-                {loading ? (
-                  <>
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                    <span>Analyzing Indicators...</span>
-                  </>
-                ) : (
-                  <>
-                    <Send className="w-4 h-4" />
-                    <span>Execute Full Security Scan</span>
-                    <ChevronRight className="w-4 h-4" />
-                  </>
-                )}
+                Analyze Another Message
               </button>
             </div>
-          </form>
+
+          </div>
         )}
+
       </div>
+
     </div>
   );
 }

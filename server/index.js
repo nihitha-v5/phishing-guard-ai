@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 
@@ -14,7 +15,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 3000;
+const HOST = '0.0.0.0';
 
 // Middleware
 app.use(cors());
@@ -41,42 +43,47 @@ app.use('/api/samples', samplesRouter);
 // Health Check
 app.get('/api/health', (req, res) => {
   res.json({
-    status: 'healthy',
-    service: 'PhishGuard AI Core Engine',
+    status: 'ok',
+    service: 'PhishGuard AI',
     version: '1.0.0',
     timestamp: new Date().toISOString()
   });
 });
 
 // Serve static client assets in production
-const clientDistPath = path.join(__dirname, '../client/dist');
+const clientDistPath = path.resolve(__dirname, '../client/dist');
 app.use(express.static(clientDistPath));
 
+// Fallback for client-side SPA routing
 app.get('*', (req, res) => {
-  if (!req.path.startsWith('/api')) {
-    const indexPath = path.join(clientDistPath, 'index.html');
-    res.sendFile(indexPath, (err) => {
-      if (err) {
-        res.status(200).send(`
-          <!DOCTYPE html>
-          <html>
-            <head><title>PhishGuard AI API Server</title></head>
-            <body style="font-family: sans-serif; background: #0f172a; color: #f8fafc; padding: 40px; text-align: center;">
-              <h1>🛡️ PhishGuard AI Backend Running</h1>
-              <p>Backend API is active on port ${PORT}. Client interface is starting or running via Vite dev server.</p>
-              <p><a href="/api/health" style="color: #38bdf8;">Check /api/health</a> | <a href="/api/samples" style="color: #38bdf8;">View /api/samples</a></p>
-            </body>
-          </html>
-        `);
-      }
+  if (req.path.startsWith('/api')) {
+    return res.status(404).json({
+      status: 'error',
+      message: `API endpoint ${req.path} not found.`
     });
   }
+
+  const indexPath = path.resolve(clientDistPath, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    return res.sendFile(indexPath);
+  }
+
+  return res.status(500).send('Frontend build not found. Please run npm run build.');
 });
 
-app.listen(PORT, () => {
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error('[SERVER ERROR]', err);
+  res.status(500).json({
+    status: 'error',
+    message: 'Internal security engine error. Please try again later.'
+  });
+});
+
+app.listen(PORT, HOST, () => {
   console.log(`====================================================`);
-  console.log(`🛡️  PHISHGUARD AI SERVER STARTED ON PORT ${PORT}`);
-  console.log(`🔗  Health Check: http://localhost:${PORT}/api/health`);
-  console.log(`🔗  Sample Scenarios: http://localhost:${PORT}/api/samples`);
+  console.log(`🛡️  PHISHGUARD AI SERVER STARTED ON http://${HOST}:${PORT}`);
+  console.log(`🔗  Health Check: http://${HOST}:${PORT}/api/health`);
+  console.log(`🔗  Sample Scenarios: http://${HOST}:${PORT}/api/samples`);
   console.log(`====================================================`);
 });

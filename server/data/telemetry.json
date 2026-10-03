@@ -133,6 +133,284 @@
       ],
       "userAction": "ANALYZED",
       "coachingCompleted": false
+    },
+    {
+      "id": "evt-muslp3hgh7no",
+      "timestamp": "2026-10-03T16:22:55.972Z",
+      "sender": "test@attacker.xyz",
+      "subject": "Test phishing",
+      "department": "Engineering",
+      "riskScore": 88,
+      "riskLevel": "HIGH",
+      "indicators": [
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true
+    },
+    {
+      "id": "evt-muslpsk5fqur",
+      "timestamp": "2026-10-03T16:23:28.469Z",
+      "sender": "test@attacker.xyz",
+      "subject": "Test phishing",
+      "department": "Engineering",
+      "riskScore": 88,
+      "riskLevel": "HIGH",
+      "indicators": [
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true
+    },
+    {
+      "id": "evt-musm217ugs64",
+      "timestamp": "2026-10-03T16:32:59.562Z",
+      "sender": "test@attacker.xyz",
+      "subject": "Test phishing",
+      "department": "Engineering",
+      "riskScore": 88,
+      "riskLevel": "HIGH",
+      "classification": "Phishing Attack",
+      "confidence": 95,
+      "indicators": [
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "evidence": [
+        {
+          "title": "Threat Indicator",
+          "severity": "HIGH",
+          "explanation": "Suspicious characteristic",
+          "snippet": ""
+        }
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true,
+      "coachingTopic": "Security Awareness"
+    },
+    {
+      "id": "evt-musm5pglbb3m",
+      "timestamp": "2026-10-03T16:35:50.949Z",
+      "sender": "test@attacker.xyz",
+      "subject": "Test phishing",
+      "department": "Engineering",
+      "riskScore": 88,
+      "riskLevel": "HIGH",
+      "classification": "Phishing Attack",
+      "confidence": 95,
+      "indicators": [
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "evidence": [
+        {
+          "title": "Threat Indicator",
+          "severity": "HIGH",
+          "explanation": "Suspicious characteristic",
+          "snippet": ""
+        }
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true,
+      "coachingTopic": "Security Awareness"
+    },
+    {
+      "id": "evt-musm693i45t9",
+      "timestamp": "2026-10-03T16:36:16.398Z",
+      "sender": "test@attacker.xyz",
+      "subject": "Test phishing",
+      "department": "Engineering",
+      "riskScore": 88,
+      "riskLevel": "HIGH",
+      "classification": "Phishing Attack",
+      "confidence": 95,
+      "indicators": [
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "evidence": [
+        {
+          "title": "Threat Indicator",
+          "severity": "HIGH",
+          "explanation": "Suspicious characteristic",
+          "snippet": ""
+        }
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true,
+      "coachingTopic": "Security Awareness"
+    },
+    {
+      "id": "evt-musm6wuotwwv",
+      "timestamp": "2026-10-03T16:36:47.184Z",
+      "sender": "test@attacker.xyz",
+      "subject": "Test phishing",
+      "department": "Engineering",
+      "riskScore": 88,
+      "riskLevel": "HIGH",
+      "classification": "Phishing Attack",
+      "confidence": 95,
+      "indicators": [
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "evidence": [
+        {
+          "title": "Threat Indicator",
+          "severity": "HIGH",
+          "explanation": "Suspicious characteristic",
+          "snippet": ""
+        }
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true,
+      "coachingTopic": "Security Awareness"
+    },
+    {
+      "id": "evt-musmda6xkt52",
+      "timestamp": "2026-10-03T16:41:44.409Z",
+      "sender": "test@attacker.xyz",
+      "subject": "Test phishing",
+      "department": "Engineering",
+      "riskScore": 88,
+      "riskLevel": "HIGH",
+      "classification": "Phishing Attack",
+      "confidence": 95,
+      "indicators": [
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "evidence": [
+        {
+          "title": "Threat Indicator",
+          "severity": "HIGH",
+          "explanation": "Suspicious characteristic",
+          "snippet": ""
+        }
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true,
+      "coachingTopic": "Security Awareness"
+    },
+    {
+      "id": "evt-musmicfzclim",
+      "timestamp": "2026-10-03T16:45:40.607Z",
+      "sender": "IT Helpdesk Security <support@micros0ft-security-auth.com>",
+      "subject": "FINAL NOTICE: Your Office 365 Password Expires Today",
+      "department": "Engineering",
+      "riskScore": 20,
+      "riskLevel": "LOW",
+      "classification": "Social Engineering & Urgency Scam",
+      "confidence": 92.5,
+      "indicators": [
+        "PSYCHOLOGICAL_URGENCY"
+      ],
+      "evidence": [
+        {
+          "title": "Artificial Urgency & Fear Pressure Tactics",
+          "severity": "HIGH",
+          "explanation": "Attackers create artificial panic with tight deadlines and harsh consequences (like account suspension) so victims act impulsively without verifying.",
+          "snippet": "Trigger text: \"FINAL NOTICE\""
+        }
+      ],
+      "userAction": "ANALYZED",
+      "coachingCompleted": false,
+      "coachingTopic": "Urgency & Fear Bias Exploitation"
+    },
+    {
+      "id": "evt-musmjf5uibrw",
+      "timestamp": "2026-10-03T16:46:30.786Z",
+      "sender": "IT Helpdesk Security <support@micros0ft-security-auth.com>",
+      "subject": "FINAL NOTICE: Your Office 365 Password Expires Today",
+      "department": "Engineering",
+      "riskScore": 20,
+      "riskLevel": "LOW",
+      "classification": "Social Engineering & Urgency Scam",
+      "confidence": 92.5,
+      "indicators": [
+        "PSYCHOLOGICAL_URGENCY"
+      ],
+      "evidence": [
+        {
+          "title": "Artificial Urgency & Fear Pressure Tactics",
+          "severity": "HIGH",
+          "explanation": "Attackers create artificial panic with tight deadlines and harsh consequences (like account suspension) so victims act impulsively without verifying.",
+          "snippet": "Trigger text: \"FINAL NOTICE\""
+        }
+      ],
+      "userAction": "COACHING_COMPLETED",
+      "coachingCompleted": true,
+      "coachingTopic": "Urgency & Fear Bias Exploitation"
+    },
+    {
+      "id": "evt-musn42bf84eq",
+      "timestamp": "2026-10-03T17:02:33.915Z",
+      "sender": "test@attacker.xyz",
+      "subject": "Test phishing",
+      "department": "Engineering",
+      "riskScore": 88,
+      "riskLevel": "HIGH",
+      "classification": "Phishing Attack",
+      "confidence": 95,
+      "indicators": [
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "evidence": [
+        {
+          "title": "Threat Indicator",
+          "severity": "HIGH",
+          "explanation": "Suspicious characteristic",
+          "snippet": ""
+        }
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true,
+      "coachingTopic": "Security Awareness"
+    },
+    {
+      "id": "evt-musnf0d1hff1",
+      "timestamp": "2026-10-03T17:11:04.597Z",
+      "sender": "IT Helpdesk Security <support@micros0ft-security-auth.com>",
+      "subject": "FINAL NOTICE: Your Office 365 Password Expires Today",
+      "department": "Engineering",
+      "riskScore": 20,
+      "riskLevel": "LOW",
+      "classification": "Social Engineering & Urgency Scam",
+      "confidence": 92.5,
+      "indicators": [
+        "PSYCHOLOGICAL_URGENCY"
+      ],
+      "evidence": [
+        {
+          "title": "Artificial Urgency & Fear Pressure Tactics",
+          "severity": "HIGH",
+          "explanation": "Attackers create artificial panic with tight deadlines and harsh consequences (like account suspension) so victims act impulsively without verifying.",
+          "snippet": "Trigger text: \"FINAL NOTICE\""
+        }
+      ],
+      "userAction": "COACHING_COMPLETED",
+      "coachingCompleted": true,
+      "coachingTopic": "Urgency & Fear Bias Exploitation"
+    },
+    {
+      "id": "evt-muso8om3zg8v",
+      "timestamp": "2026-10-03T17:34:09.051Z",
+      "sender": "test@attacker.xyz",
+      "subject": "Test phishing",
+      "department": "Engineering",
+      "riskScore": 88,
+      "riskLevel": "HIGH",
+      "classification": "Phishing Attack",
+      "confidence": 95,
+      "indicators": [
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "evidence": [
+        {
+          "title": "Threat Indicator",
+          "severity": "HIGH",
+          "explanation": "Suspicious characteristic",
+          "snippet": ""
+        }
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true,
+      "coachingTopic": "Security Awareness"
     }
   ],
   "stats": {

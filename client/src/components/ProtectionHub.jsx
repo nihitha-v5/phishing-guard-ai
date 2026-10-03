@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { 
-  ShieldCheck, 
-  ShieldAlert, 
-  Lock, 
-  AlertOctagon, 
-  ExternalLink, 
-  CheckCircle2, 
-  Ban, 
-  Send, 
+import {
+  ShieldCheck,
+  ShieldAlert,
+  Lock,
+  AlertOctagon,
+  ExternalLink,
+  CheckCircle2,
+  Ban,
+  Send,
   HelpCircle,
   Eye,
   Terminal,
@@ -42,9 +42,9 @@ export default function ProtectionHub({ report, onUpdateAction }) {
         await onUpdateAction(eventId, actionType);
       }
       setTimeout(() => {
-        setActionStatus({ 
-          type: actionType, 
-          message: `✅ Successfully executed: ${label}. Telemetry event #${eventId || 'local'} updated.` 
+        setActionStatus({
+          type: actionType,
+          message: `✅ Successfully executed: ${label}. Telemetry event #${eventId || 'local'} updated.`
         });
       }, 600);
     } catch (err) {
@@ -152,9 +152,8 @@ export default function ProtectionHub({ report, onUpdateAction }) {
                 <button
                   key={i}
                   onClick={() => setSelectedUrlIndex(i)}
-                  className={`px-2.5 py-1 text-xs rounded font-mono ${
-                    selectedUrlIndex === i ? 'bg-cyan-600 text-white font-bold' : 'text-slate-400 hover:text-slate-200'
-                  }`}
+                  className={`px-2.5 py-1 text-xs rounded font-mono ${selectedUrlIndex === i ? 'bg-cyan-600 text-white font-bold' : 'text-slate-400 hover:text-slate-200'
+                    }`}
                 >
                   Link #{i + 1}
                 </button>

@@ -46,9 +46,12 @@ router.post('/', async (req, res) => {
         department,
         riskScore: report.score,
         riskLevel: report.riskLevel,
+        classification: report.classification,
+        confidence: report.confidence,
         indicators: report.indicators,
         userAction: 'ANALYZED',
-        coachingCompleted: false
+        coachingCompleted: false,
+        coachingTopic: report.coaching && report.coaching[0] ? report.coaching[0].title : 'General Security'
       });
     }
 

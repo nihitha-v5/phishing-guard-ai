@@ -434,9 +434,36 @@ export function analyzePhishing(input) {
     safeActions.push('Always confirm unexpected requests involving funds or credentials.');
   }
 
+  // Derive classification
+  let classification = 'Clean Communication';
+  if (uniqueIndicators.some(i => i.category === 'CREDENTIAL_HARVEST')) {
+    classification = 'Credential Harvesting';
+  } else if (uniqueIndicators.some(i => i.id === 'BRAND_DISPLAY_MISMATCH' || i.id === 'FREE_PROVIDER_IMPERSONATION')) {
+    classification = 'Executive / Department Impersonation (BEC)';
+  } else if (uniqueIndicators.some(i => i.id === 'TYPOSQUATTING_DOMAIN')) {
+    classification = 'Lookalike Domain Typosquatting';
+  } else if (uniqueIndicators.some(i => i.category === 'SUSPICIOUS_URL')) {
+    classification = 'Malicious URL / Suspicious Destination';
+  } else if (uniqueIndicators.some(i => i.category === 'URGENCY_PRESSURE')) {
+    classification = 'Social Engineering & Urgency Scam';
+  }
+
+  // Calculate dynamic confidence score (e.g. 92% to 98% based on indicator richness)
+  let confidence = 94.2;
+  if (finalScore >= 80) {
+    confidence = Math.min(99.1, 95.0 + uniqueIndicators.length * 1.2);
+  } else if (finalScore <= 15) {
+    confidence = 96.8;
+  } else {
+    confidence = Math.min(96.0, 91.0 + uniqueIndicators.length * 1.5);
+  }
+  confidence = parseFloat(confidence.toFixed(1));
+
   return {
     score: finalScore,
     riskLevel,
+    classification,
+    confidence,
     threatSummary,
     analyzedAt: new Date().toISOString(),
     senderInfo: sender,
