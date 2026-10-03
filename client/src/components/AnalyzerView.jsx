@@ -32,7 +32,8 @@ export default function AnalyzerView({
   onNavigateToIntel,
   onNavigateToCoaching,
   onNavigateToProtection,
-  onResetAnalysis
+  onResetAnalysis,
+  onOpenAssistant
 }) {
   const [inputTab, setInputTab] = useState('message'); // 'message' | 'url' | 'headers'
   const [rawHeaders, setRawHeaders] = useState('');
@@ -438,13 +439,13 @@ export default function AnalyzerView({
 
             {/* Action CTAs */}
             <div className="pt-3 border-t border-slate-800 space-y-2">
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                 <button
                   type="button"
                   onClick={onNavigateToIntel}
                   className="px-3 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs transition flex items-center justify-center gap-1"
                 >
-                  <span>View Evidence</span>
+                  <span>Evidence</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
 
@@ -454,7 +455,16 @@ export default function AnalyzerView({
                   className="px-3 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-semibold text-xs border border-slate-700 transition flex items-center justify-center gap-1"
                 >
                   <BookOpen className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Start Coaching</span>
+                  <span>Coaching</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => onOpenAssistant && onOpenAssistant(report)}
+                  className="px-3 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs transition flex items-center justify-center gap-1 shadow-sm"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
+                  <span>Ask AI</span>
                 </button>
               </div>
 

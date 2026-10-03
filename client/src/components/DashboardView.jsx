@@ -9,20 +9,23 @@ import {
   Lock, 
   AlertOctagon, 
   ArrowUpRight, 
-  ChevronRight,
-  ExternalLink,
-  FileSearch,
-  CheckCircle2,
-  Clock,
-  Zap,
-  Building2
+  ChevronRight, 
+  FileSearch, 
+  CheckCircle2, 
+  Clock, 
+  Zap, 
+  Building2,
+  Bot,
+  Sparkles,
+  HelpCircle
 } from 'lucide-react';
 
 export default function DashboardView({ 
   telemetryData, 
   onNavigateToAnalyze, 
   onNavigateToIntel, 
-  onSelectThreatDetail 
+  onSelectThreatDetail,
+  onOpenAssistant 
 }) {
   const kpis = telemetryData?.kpis || {
     threatsDetected: 127,
@@ -72,6 +75,14 @@ export default function DashboardView({
             >
               <FileSearch className="w-4 h-4 text-cyan-400" />
               <span>View Threat Intelligence</span>
+            </button>
+
+            <button
+              onClick={onOpenAssistant}
+              className="px-4 py-2.5 rounded-xl bg-cyan-950/60 hover:bg-cyan-900/60 text-cyan-300 font-semibold text-xs sm:text-sm border border-cyan-500/40 flex items-center gap-2 transition"
+            >
+              <Bot className="w-4 h-4 text-cyan-400" />
+              <span>Ask AI Copilot</span>
             </button>
           </div>
         </div>
@@ -281,6 +292,33 @@ export default function DashboardView({
 
       </div>
 
+      {/* AI Assistant Help CTA Card */}
+      <div className="glass-panel p-6 rounded-2xl bg-gradient-to-r from-slate-950 via-cyan-950/30 to-blue-950/30 border border-cyan-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-cyan-500/20 shrink-0">
+            <Bot className="w-6 h-6" />
+          </div>
+          <div>
+            <h3 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+              <span>Need help understanding a threat?</span>
+              <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-500/20 text-cyan-300">AI Copilot</span>
+            </h3>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Ask questions about deceptive indicators, verify suspicious links, and receive step-by-step incident response guidance.
+            </p>
+          </div>
+        </div>
+
+        <button
+          onClick={onOpenAssistant}
+          className="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs sm:text-sm shadow-md shadow-cyan-900/40 flex items-center gap-2 transition shrink-0 self-stretch sm:self-auto justify-center"
+        >
+          <Sparkles className="w-4 h-4" />
+          <span>Ask PhishGuard AI</span>
+        </button>
+      </div>
+
     </div>
   );
 }
+

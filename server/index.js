@@ -8,6 +8,7 @@ import dotenv from 'dotenv';
 import analyzeRouter from './src/routes/analyze.js';
 import telemetryRouter from './src/routes/telemetry.js';
 import samplesRouter from './src/routes/samples.js';
+import assistantRouter from './src/routes/assistant.js';
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ app.use((req, res, next) => {
 app.use('/api/analyze', analyzeRouter);
 app.use('/api/telemetry', telemetryRouter);
 app.use('/api/samples', samplesRouter);
+app.use('/api/assistant', assistantRouter);
 
 // Health Check
 app.get('/api/health', (req, res) => {

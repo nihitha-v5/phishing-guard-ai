@@ -411,6 +411,31 @@
       "userAction": "QUARANTINED",
       "coachingCompleted": true,
       "coachingTopic": "Security Awareness"
+    },
+    {
+      "id": "evt-musouwpvz0cp",
+      "timestamp": "2026-10-03T17:51:25.987Z",
+      "sender": "test@attacker.xyz",
+      "subject": "Test phishing",
+      "department": "Engineering",
+      "riskScore": 88,
+      "riskLevel": "HIGH",
+      "classification": "Phishing Attack",
+      "confidence": 95,
+      "indicators": [
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "evidence": [
+        {
+          "title": "Threat Indicator",
+          "severity": "HIGH",
+          "explanation": "Suspicious characteristic",
+          "snippet": ""
+        }
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true,
+      "coachingTopic": "Security Awareness"
     }
   ],
   "stats": {

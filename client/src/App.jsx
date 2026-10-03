@@ -9,15 +9,30 @@ import CoachingView from './components/CoachingView';
 import AnalyticsView from './components/AnalyticsView';
 import SettingsView from './components/SettingsView';
 import ThreatDetailModal from './components/ThreatDetailModal';
+import LoginPage from './components/Auth/LoginPage';
+import SignUpPage from './components/Auth/SignUpPage';
+import AIAssistantDrawer from './components/Assistant/AIAssistantDrawer';
+import { getCurrentUser, logoutUser } from './services/authService';
 import { AlertCircle, CheckCircle } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('dashboard'); // Default landing is Dashboard!
+  // Authentication State
+  const [currentUser, setCurrentUser] = useState(() => getCurrentUser());
+  const [authView, setAuthView] = useState('login'); // 'login' | 'signup'
+
+  // Application Views & Navigation
+  const [activeTab, setActiveTab] = useState('dashboard');
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [sampleScenarios, setSampleScenarios] = useState([]);
   const [selectedScenarioId, setSelectedScenarioId] = useState(null);
   const [selectedThreatDetail, setSelectedThreatDetail] = useState(null);
 
+  // AI Security Assistant State
+  const [isAssistantOpen, setIsAssistantOpen] = useState(false);
+  const [assistantContext, setAssistantContext] = useState(null);
+  const [assistantInitialQuery, setAssistantInitialQuery] = useState(null);
+
+  // Threat Scanner Form & Results
   const [formData, setFormData] = useState({
     sender: '',
     subject: '',
@@ -35,13 +50,35 @@ export default function App() {
   const [toastMsg, setToastMsg] = useState(null);
 
   useEffect(() => {
-    fetchSamples();
-    fetchTelemetry();
-  }, []);
+    if (currentUser) {
+      fetchSamples();
+      fetchTelemetry();
+    }
+  }, [currentUser]);
 
   const showToast = (msg) => {
     setToastMsg(msg);
     setTimeout(() => setToastMsg(null), 4000);
+  };
+
+  const handleLoginSuccess = (user) => {
+    setCurrentUser(user);
+    setActiveTab('dashboard');
+    showToast(`Welcome back, ${user.fullName}! Security SOC Console active.`);
+  };
+
+  const handleLogout = () => {
+    logoutUser();
+    setCurrentUser(null);
+    setAuthView('login');
+    setIsAssistantOpen(false);
+    showToast('You have successfully signed out.');
+  };
+
+  const handleOpenAssistant = (context = null, query = null) => {
+    setAssistantContext(context || report);
+    setAssistantInitialQuery(query);
+    setIsAssistantOpen(true);
   };
 
   const fetchSamples = async () => {
@@ -115,6 +152,7 @@ export default function App() {
 
       if (data.status === 'success') {
         setReport(data.report);
+        setAssistantContext(data.report);
         showToast('Threat analysis completed successfully!');
         fetchTelemetry();
       } else {
@@ -169,6 +207,25 @@ export default function App() {
     }
   };
 
+  // 1. Unauthenticated Route Guard: Render Login or Sign Up
+  if (!currentUser) {
+    if (authView === 'signup') {
+      return (
+        <SignUpPage
+          onSignUpSuccess={handleLoginSuccess}
+          onNavigateToLogin={() => setAuthView('login')}
+        />
+      );
+    }
+    return (
+      <LoginPage
+        onLoginSuccess={handleLoginSuccess}
+        onNavigateToSignUp={() => setAuthView('signup')}
+      />
+    );
+  }
+
+  // 2. Authenticated Application Layout
   return (
     <div className="min-h-screen flex bg-[#090d16] text-slate-100 font-sans selection:bg-cyan-500 selection:text-white">
       
@@ -183,10 +240,13 @@ export default function App() {
       {/* Main Content Pane */}
       <div className="flex-1 flex flex-col min-w-0">
         
-        {/* Header Bar */}
+        {/* Header Bar with Profile Dropdown & AI Trigger */}
         <Header
+          currentUser={currentUser}
+          onLogout={handleLogout}
           onQuickAnalyze={() => setActiveTab('analyze')}
           onOpenSettings={() => setActiveTab('settings')}
+          onOpenAssistant={() => handleOpenAssistant(report)}
           engineMode={report?.metadata?.engineMode}
         />
 
@@ -208,22 +268,24 @@ export default function App() {
 
           {/* Toast Notification */}
           {toastMsg && (
-            <div className="fixed bottom-6 right-6 z-50 p-4 rounded-xl bg-slate-900 border border-cyan-500/60 text-cyan-300 text-xs font-semibold shadow-2xl flex items-center gap-2 animate-fadeIn">
+            <div className="fixed bottom-6 left-6 z-50 p-4 rounded-xl bg-slate-900 border border-cyan-500/60 text-cyan-300 text-xs font-semibold shadow-2xl flex items-center gap-2 animate-fadeIn">
               <CheckCircle className="w-4 h-4 text-cyan-400" />
               <span>{toastMsg}</span>
             </div>
           )}
 
-          {/* Views */}
+          {/* Dashboard View */}
           {activeTab === 'dashboard' && (
             <DashboardView
               telemetryData={telemetryData}
               onNavigateToAnalyze={() => setActiveTab('analyze')}
               onNavigateToIntel={() => setActiveTab('threat-intel')}
               onSelectThreatDetail={(threat) => setSelectedThreatDetail(threat)}
+              onOpenAssistant={() => handleOpenAssistant(report)}
             />
           )}
 
+          {/* Threat Analyzer View */}
           {activeTab === 'analyze' && (
             <AnalyzerView
               formData={formData}
@@ -238,9 +300,11 @@ export default function App() {
               onNavigateToCoaching={() => setActiveTab('coaching')}
               onNavigateToProtection={() => setActiveTab('protection')}
               onResetAnalysis={() => setReport(null)}
+              onOpenAssistant={(ctx) => handleOpenAssistant(ctx || report, 'Why is this message dangerous and what should I do?')}
             />
           )}
 
+          {/* Threat Intelligence View */}
           {activeTab === 'threat-intel' && (
             <ThreatIntelView
               report={report}
@@ -248,6 +312,7 @@ export default function App() {
             />
           )}
 
+          {/* Protection Hub View */}
           {activeTab === 'protection' && (
             <ProtectionView
               report={report}
@@ -256,6 +321,7 @@ export default function App() {
             />
           )}
 
+          {/* Security Coaching View */}
           {activeTab === 'coaching' && (
             <CoachingView
               report={report}
@@ -265,6 +331,7 @@ export default function App() {
             />
           )}
 
+          {/* Enterprise Analytics View */}
           {activeTab === 'analytics' && (
             <AnalyticsView
               telemetryData={telemetryData}
@@ -274,6 +341,7 @@ export default function App() {
             />
           )}
 
+          {/* Settings View */}
           {activeTab === 'settings' && (
             <SettingsView
               formData={formData}
@@ -295,6 +363,15 @@ export default function App() {
             onNavigateToCoaching={() => setActiveTab('coaching')}
           />
         )}
+
+        {/* Global Floating AI Security Assistant Drawer */}
+        <AIAssistantDrawer
+          isOpen={isAssistantOpen}
+          onClose={() => setIsAssistantOpen(false)}
+          onOpen={() => handleOpenAssistant(report)}
+          activeContext={assistantContext}
+          initialQuery={assistantInitialQuery}
+        />
 
         {/* Global Footer */}
         <footer className="border-t border-slate-900 bg-slate-950/60 py-4 px-6 text-xs text-slate-500">
