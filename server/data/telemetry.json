@@ -1,0 +1,143 @@
+{
+  "events": [
+    {
+      "id": "evt-1001",
+      "timestamp": "2026-09-30T15:48:08.994Z",
+      "sender": "IT Helpdesk <support@micros0ft-security-auth.com>",
+      "subject": "URGENT: Microsoft 365 Password Expiry Notice",
+      "department": "Finance",
+      "riskScore": 92,
+      "riskLevel": "CRITICAL",
+      "indicators": [
+        "TYPOSQUATTING_DOMAIN",
+        "PSYCHOLOGICAL_URGENCY",
+        "SUSPICIOUS_LOGIN_DESTINATION"
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true
+    },
+    {
+      "id": "evt-1002",
+      "timestamp": "2026-10-01T15:48:08.994Z",
+      "sender": "Payroll Dept <payroll@gmail.com>",
+      "subject": "Action Required: Direct Deposit Information Update",
+      "department": "Human Resources",
+      "riskScore": 85,
+      "riskLevel": "CRITICAL",
+      "indicators": [
+        "FREE_PROVIDER_IMPERSONATION",
+        "CREDENTIAL_HARVEST_CALL_TO_ACTION"
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true
+    },
+    {
+      "id": "evt-1003",
+      "timestamp": "2026-10-02T03:48:08.994Z",
+      "sender": "DocuSign Signatures <service@docuslgn.com>",
+      "subject": "Completed: Confidential Vendor Agreement #8942",
+      "department": "Legal",
+      "riskScore": 78,
+      "riskLevel": "HIGH",
+      "indicators": [
+        "TYPOSQUATTING_DOMAIN",
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "userAction": "REPORTED_SOC",
+      "coachingCompleted": true
+    },
+    {
+      "id": "evt-1004",
+      "timestamp": "2026-10-02T21:48:08.994Z",
+      "sender": "GitHub <notifications@github.com>",
+      "subject": "[GitHub] Security Advisory: Dependency vulnerability found",
+      "department": "Engineering",
+      "riskScore": 10,
+      "riskLevel": "LOW",
+      "indicators": [],
+      "userAction": "PROCEEDED_SAFELY",
+      "coachingCompleted": false
+    },
+    {
+      "id": "evt-1005",
+      "timestamp": "2026-10-03T09:48:08.994Z",
+      "sender": "CEO Executive Office <ceo-office@exec-fastmail.xyz>",
+      "subject": "STRICTLY CONFIDENTIAL: Immediate Wire Transfer Request",
+      "department": "Finance",
+      "riskScore": 95,
+      "riskLevel": "CRITICAL",
+      "indicators": [
+        "BRAND_DISPLAY_MISMATCH",
+        "PSYCHOLOGICAL_URGENCY",
+        "CREDENTIAL_HARVEST_CALL_TO_ACTION"
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true
+    },
+    {
+      "id": "evt-1006",
+      "timestamp": "2026-10-03T13:48:08.994Z",
+      "sender": "Slack Notifications <feedback@slack.com>",
+      "subject": "Weekly Team Activity Digest",
+      "department": "Marketing",
+      "riskScore": 5,
+      "riskLevel": "LOW",
+      "indicators": [],
+      "userAction": "PROCEEDED_SAFELY",
+      "coachingCompleted": false
+    },
+    {
+      "id": "evt-muskgd7tat3j",
+      "timestamp": "2026-10-03T15:48:09.065Z",
+      "sender": "test@attacker.xyz",
+      "subject": "Test phishing",
+      "department": "Engineering",
+      "riskScore": 88,
+      "riskLevel": "HIGH",
+      "indicators": [
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true
+    },
+    {
+      "id": "evt-muskh3pa47et",
+      "timestamp": "2026-10-03T15:48:43.390Z",
+      "sender": "test@attacker.xyz",
+      "subject": "Test phishing",
+      "department": "Engineering",
+      "riskScore": 88,
+      "riskLevel": "HIGH",
+      "indicators": [
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true
+    },
+    {
+      "id": "evt-musknamr7ze9",
+      "timestamp": "2026-10-03T15:53:32.307Z",
+      "sender": "Company HR & Payroll <payroll-department@gmail.com>",
+      "subject": "URGENT: Immediate Action Required - Direct Deposit Failure",
+      "department": "Finance",
+      "riskScore": 100,
+      "riskLevel": "CRITICAL",
+      "indicators": [
+        "FREE_PROVIDER_IMPERSONATION",
+        "SUSPICIOUS_TLD_URL",
+        "SUSPICIOUS_LOGIN_DESTINATION",
+        "PSYCHOLOGICAL_URGENCY",
+        "PSYCHOLOGICAL_URGENCY",
+        "CREDENTIAL_HARVEST_CALL_TO_ACTION",
+        "CREDENTIAL_HARVEST_CALL_TO_ACTION"
+      ],
+      "userAction": "ANALYZED",
+      "coachingCompleted": false
+    }
+  ],
+  "stats": {
+    "totalScans": 6,
+    "highRiskBlocked": 4,
+    "coachingSessionsCompleted": 4
+  }
+}

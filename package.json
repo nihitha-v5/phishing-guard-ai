@@ -1,0 +1,33 @@
+{
+  "name": "phishguard-ai",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "AI-Powered Explainable Phishing Detection, Protection, and Security Coaching Platform",
+  "main": "server/index.js",
+  "scripts": {
+    "start": "node server/index.js",
+    "server": "node server/index.js",
+    "client": "npm --prefix client run dev",
+    "dev": "concurrently \"node server/index.js\" \"npm --prefix client run dev\"",
+    "build": "npm --prefix client run build",
+    "test": "node tests/run-tests.js"
+  },
+  "keywords": [
+    "phishing-detection",
+    "cybersecurity",
+    "security-awareness",
+    "explainable-ai",
+    "threat-intelligence",
+    "credential-protection"
+  ],
+  "author": "PhishGuard AI Team",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}
