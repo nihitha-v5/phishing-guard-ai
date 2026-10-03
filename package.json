@@ -10,6 +10,7 @@
     "client": "npm --prefix client run dev",
     "dev": "concurrently \"node server/index.js\" \"npm --prefix client run dev\"",
     "build": "npm install --prefix client && npm run build --prefix client",
+    "postinstall": "npm install --prefix client && npm run build --prefix client",
     "test": "node tests/run-tests.js"
   },
   "keywords": [
