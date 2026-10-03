@@ -129,8 +129,93 @@ test('All sample scenarios evaluate cleanly without runtime exceptions', () => {
     assert.ok(typeof analysis.score === 'number');
     assert.ok(analysis.score >= 0 && analysis.score <= 100);
     assert.ok(['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'].includes(analysis.riskLevel));
+    assert.ok(['SAFE', 'SUSPICIOUS', 'PHISHING'].includes(analysis.classification));
     assert.ok(Array.isArray(analysis.safeActions));
   });
+});
+
+// 9. Exact User Example 1 (SAFE): Normal planning meeting message
+test('User Example 1: Planning meeting invite receives SAFE classification and low score', () => {
+  const result = analyzePhishing({
+    body: 'Hi team, the Thursday planning meeting has moved from 2 PM to 3 PM. The updated invite is on the shared calendar. Thanks, Priya'
+  });
+  assert.strictEqual(result.classification, 'SAFE');
+  assert.ok(result.score <= 25, `Score should be <= 25, got ${result.score}`);
+});
+
+// 10. Exact User Example 2 (SUSPICIOUS): Parcel hold with .xyz link
+test('User Example 2: Parcel hold notification with .xyz link receives SUSPICIOUS classification', () => {
+  const result = analyzePhishing({
+    body: 'Your parcel is on hold because of an incomplete address. Please update your delivery details at http://post-parcel-update.xyz/account'
+  });
+  assert.strictEqual(result.classification, 'SUSPICIOUS');
+  assert.ok(result.score >= 30 && result.score <= 69, `Score should be between 30 and 69, got ${result.score}`);
+});
+
+// 11. Exact User Example 3 (PHISHING): Urgent M365 account suspension & lookalike link
+test('User Example 3: M365 account suspension with lookalike domain receives PHISHING classification', () => {
+  const result = analyzePhishing({
+    body: 'URGENT: Your Microsoft account will be suspended today! Verify your password immediately by clicking http://micros0ft-security.example.com/verify. Failure to verify will result in permanent account suspension.'
+  });
+  assert.strictEqual(result.classification, 'PHISHING');
+  assert.ok(result.score >= 70 && result.score <= 100, `Score should be between 70 and 100, got ${result.score}`);
+});
+
+// 12. Exact User Example 4 (SAFE): Rescheduled meeting
+test('User Example 4: Rescheduled meeting announcement receives SAFE classification', () => {
+  const result = analyzePhishing({
+    body: 'Hi, the meeting has been moved to 3 PM tomorrow. Please check the calendar for the updated schedule.'
+  });
+  assert.strictEqual(result.classification, 'SAFE');
+  assert.ok(result.score <= 29, `Score should be <= 29, got ${result.score}`);
+});
+
+// 13. Exact User Example 5 (PHISHING): Direct password and OTP reply request
+test('User Example 5: Password and OTP request receives PHISHING classification', () => {
+  const result = analyzePhishing({
+    body: 'Your password reset is ready. Reply to this email with your current password and the 6-digit OTP we texted you.'
+  });
+  assert.strictEqual(result.classification, 'PHISHING');
+  assert.ok(result.score >= 70, `Score should be >= 70, got ${result.score}`);
+});
+
+// 14. Multi-sample calibration test across 10 distinct inputs
+test('Calibration: 10 diverse inputs produce distinct, calibrated scores and proper tiers', () => {
+  const testCases = [
+    // 3 SAFE
+    { text: 'Quarterly review slides are now uploaded to the team drive.', expectedTier: 'SAFE', maxScore: 25 },
+    { text: 'Lunch and learn session on Tuesday at noon in Room 302. Please RSVP.', expectedTier: 'SAFE', maxScore: 25 },
+    { text: 'Weekly engineering standup summary: all PRs merged successfully.', expectedTier: 'SAFE', maxScore: 25 },
+    
+    // 3 SUSPICIOUS
+    { text: 'Check out this shared file: http://tinyurl.com/doc-review-shared', expectedTier: 'SUSPICIOUS', minScore: 10, maxScore: 69 },
+    { text: 'Please review your invoice preview: http://192.168.1.105/billing/view', expectedTier: 'SUSPICIOUS', minScore: 20, maxScore: 69 },
+    { text: 'Your file download link expires in 48 hours: http://fileshare.xyz/download', expectedTier: 'SUSPICIOUS', minScore: 20, maxScore: 69 },
+    
+    // 4 PHISHING
+    { text: 'URGENT: Access will be revoked. Enter your password at http://paypal.com.verify-account.top/login', expectedTier: 'PHISHING', minScore: 70 },
+    { text: 'HR Alert: Salary is on hold. Click the link below to verify your direct deposit: http://workday.auth.xyz/verify', expectedTier: 'PHISHING', minScore: 70 },
+    { text: 'Your Office 365 password expires today. Reply with your password and 2FA code immediately.', expectedTier: 'PHISHING', minScore: 70 },
+    { text: 'Critical Notice: Your bank account has been locked. Verify your pin and social security number at http://185.220.101.5/bank/unlock', expectedTier: 'PHISHING', minScore: 70 }
+  ];
+
+  const scores = [];
+  testCases.forEach((tc, idx) => {
+    const res = analyzePhishing({ body: tc.text });
+    scores.push(res.score);
+    if (tc.maxScore !== undefined) {
+      assert.ok(res.score <= tc.maxScore, `Case ${idx + 1} (${tc.text.slice(0, 30)}) score ${res.score} exceeds max ${tc.maxScore}`);
+    }
+    if (tc.minScore !== undefined) {
+      assert.ok(res.score >= tc.minScore, `Case ${idx + 1} (${tc.text.slice(0, 30)}) score ${res.score} is below min ${tc.minScore}`);
+    }
+    assert.strictEqual(res.classification, tc.expectedTier, `Case ${idx + 1} expected ${tc.expectedTier}, got ${res.classification} (Score: ${res.score})`);
+  });
+
+  // Ensure scores are not all identical or all 100
+  const uniqueScores = new Set(scores);
+  assert.ok(uniqueScores.size >= 5, `Expected diverse scores, got: ${scores.join(', ')}`);
+  assert.ok(!scores.every(s => s === 100), 'Scores must not all be 100');
 });
 
 console.log('\n====================================================');

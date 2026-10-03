@@ -436,6 +436,181 @@
       "userAction": "QUARANTINED",
       "coachingCompleted": true,
       "coachingTopic": "Security Awareness"
+    },
+    {
+      "id": "evt-muspo3i1xhpr",
+      "timestamp": "2026-10-03T18:14:07.801Z",
+      "sender": "test@attacker.xyz",
+      "subject": "Test phishing",
+      "department": "Engineering",
+      "riskScore": 88,
+      "riskLevel": "HIGH",
+      "classification": "Phishing Attack",
+      "confidence": 95,
+      "indicators": [
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "evidence": [
+        {
+          "title": "Threat Indicator",
+          "severity": "HIGH",
+          "explanation": "Suspicious characteristic",
+          "snippet": ""
+        }
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true,
+      "coachingTopic": "Security Awareness"
+    },
+    {
+      "id": "evt-muspowgyp3r8",
+      "timestamp": "2026-10-03T18:14:45.346Z",
+      "sender": "test@attacker.xyz",
+      "subject": "Test phishing",
+      "department": "Engineering",
+      "riskScore": 88,
+      "riskLevel": "HIGH",
+      "classification": "Phishing Attack",
+      "confidence": 95,
+      "indicators": [
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "evidence": [
+        {
+          "title": "Threat Indicator",
+          "severity": "HIGH",
+          "explanation": "Suspicious characteristic",
+          "snippet": ""
+        }
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true,
+      "coachingTopic": "Security Awareness"
+    },
+    {
+      "id": "evt-muspqjm2wmuy",
+      "timestamp": "2026-10-03T18:16:01.994Z",
+      "sender": "test@attacker.xyz",
+      "subject": "Test phishing",
+      "department": "Engineering",
+      "riskScore": 88,
+      "riskLevel": "HIGH",
+      "classification": "Phishing Attack",
+      "confidence": 95,
+      "indicators": [
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "evidence": [
+        {
+          "title": "Threat Indicator",
+          "severity": "HIGH",
+          "explanation": "Suspicious characteristic",
+          "snippet": ""
+        }
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true,
+      "coachingTopic": "Security Awareness"
+    },
+    {
+      "id": "evt-muspr5keu7r5",
+      "timestamp": "2026-10-03T18:16:30.446Z",
+      "sender": "test@attacker.xyz",
+      "subject": "Test phishing",
+      "department": "Engineering",
+      "riskScore": 88,
+      "riskLevel": "HIGH",
+      "classification": "Phishing Attack",
+      "confidence": 95,
+      "indicators": [
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "evidence": [
+        {
+          "title": "Threat Indicator",
+          "severity": "HIGH",
+          "explanation": "Suspicious characteristic",
+          "snippet": ""
+        }
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true,
+      "coachingTopic": "Security Awareness"
+    },
+    {
+      "id": "evt-musprejm95xu",
+      "timestamp": "2026-10-03T18:16:42.082Z",
+      "sender": "test@attacker.xyz",
+      "subject": "Test phishing",
+      "department": "Engineering",
+      "riskScore": 88,
+      "riskLevel": "HIGH",
+      "classification": "Phishing Attack",
+      "confidence": 95,
+      "indicators": [
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "evidence": [
+        {
+          "title": "Threat Indicator",
+          "severity": "HIGH",
+          "explanation": "Suspicious characteristic",
+          "snippet": ""
+        }
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true,
+      "coachingTopic": "Security Awareness"
+    },
+    {
+      "id": "evt-musps0jgxh8j",
+      "timestamp": "2026-10-03T18:17:10.588Z",
+      "sender": "test@attacker.xyz",
+      "subject": "Test phishing",
+      "department": "Engineering",
+      "riskScore": 88,
+      "riskLevel": "HIGH",
+      "classification": "Phishing Attack",
+      "confidence": 95,
+      "indicators": [
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "evidence": [
+        {
+          "title": "Threat Indicator",
+          "severity": "HIGH",
+          "explanation": "Suspicious characteristic",
+          "snippet": ""
+        }
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true,
+      "coachingTopic": "Security Awareness"
+    },
+    {
+      "id": "evt-muspsi6sn1hl",
+      "timestamp": "2026-10-03T18:17:33.460Z",
+      "sender": "test@attacker.xyz",
+      "subject": "Test phishing",
+      "department": "Engineering",
+      "riskScore": 88,
+      "riskLevel": "HIGH",
+      "classification": "Phishing Attack",
+      "confidence": 95,
+      "indicators": [
+        "SUSPICIOUS_TLD_URL"
+      ],
+      "evidence": [
+        {
+          "title": "Threat Indicator",
+          "severity": "HIGH",
+          "explanation": "Suspicious characteristic",
+          "snippet": ""
+        }
+      ],
+      "userAction": "QUARANTINED",
+      "coachingCompleted": true,
+      "coachingTopic": "Security Awareness"
     }
   ],
   "stats": {
